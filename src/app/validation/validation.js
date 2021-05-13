@@ -7,7 +7,7 @@ exports.validateRegUser = (req, res, next) => {
         role: joi.string().required(),
         email: joi.string().email().min(5).max(50).required(),
         phoneNo: joi.number().min(10).required(),
-        password: joi.string().min(5).max(10).required(),
+        password: joi.string().min(8).max(15).required(),
         confirmPassword: joi.string().required().valid(joi.ref('password'))
     })
     let result = schema.validate(req.body);

@@ -22,6 +22,25 @@ const userSchema = new Mongoose.Schema({
         type: String,
         required: true,
     },
+    isActive: {
+        type: String,
+        enum: [0, 1],
+        default: 0
+    },
+    forgotPasswordToken:{
+        type:String,
+    },
+    resetPasswordToken:{
+        type:String
+    },
+    emailVerificationToken: {
+        type:String,
+    },
+    token:[{
+            type:String,
+            required:true,
+        }]
+  
 }, {
     timestamps: true,
 })
