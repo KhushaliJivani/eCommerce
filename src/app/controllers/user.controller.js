@@ -43,6 +43,7 @@ const signUpProcess=async(req,res)=>{
             phoneNo: req.body.phoneNo,
             password: password,
             emailVerificationToken:token,
+            emailVerificationTokenExpire:Date.now()+360000,
         })
         const registered = await addUser.save().then(result => {
             var mailOptions={
@@ -50,7 +51,7 @@ const signUpProcess=async(req,res)=>{
                 to:req.body.email,
                 subject:'Account verification mail',
                 text:'hello all are doing good',
-                html:'Hello '+req.body.fName+',<br>'+'please verify your account by clicking the link:<br>http://'+req.headers.host+'/confirmation/'+req.body.email+'/'+token+'<br>Thank you!!<br>'
+                html:'Hello '+req.body.fName+',<br>'+'please verify your account by clicking the link:<br>http://localhost:3000/login/'+token+'<br>Thank you!!<br>'
             };
             mail.email(mailOptions,(err,data)=>{
                 if(err){
@@ -101,4 +102,60 @@ exports.changePassword=async(req,res)=>{
         }
         
     }
+}
+exports.resendLink=async(req,res)=>{
+    registerUser.findOne({email:req.body.email},function(err,user){
+        if(!user){
+            res.status(400).send({
+                message:"no user found enter a correct email",
+            })
+        }else if(user.isActive==1){
+            res.status(200).send({message:"account is already verified please log in"});
+        }else{
+            const token=Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const storeToken=registerUser.updateOne({_id:user._id},{$set:{emailVerificationToken:token,emailVerificationTokenExpire:Date.now()+360000}});
+            console.log(storeToken);
+            let mailOptions={
+                from:'khushalijivani31@gmail.com',
+                to:req.body.email,
+                subject:'Account verification mail',
+                html:'Hello '+req.body.fName+',<br>'+'please verify your account by clicking the link:<br>http://localhost:3000/login/'+token+'<br>Thank you!!<br>'
+
+            }
+            mail.email(mailOptions,(err,data)=>{
+                if(err){
+                    res.status(401).send({
+                        message:"user not fund",
+                        data:[],
+                        error:err
+                    });
+                }else{
+                    res.status(200).send({
+                        
+                        message:"email send",
+                        data: data,
+                        token: token,
+                        error: []
+                });
+                }
+            });  
+        }
+    })
+}
+
+
+exports.logout=async(req,res)=>{
+    let email=req.params.email;
+    let token=req.params.token;
+    const user=await registerUser.findOne({email:email});
+    if(user){
+        const destroyToken=await registerUser.updateOne({email:req.body.email},{$pull:{token:token}});
+        res.status(200).send({message:"logout successfully"});   
+    }else{
+        res.send(401).status({
+            message:"no user found"
+        })
+    }
+
+
 }

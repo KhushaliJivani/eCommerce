@@ -4,6 +4,7 @@ const configJWT = require("../../config/config");
 const jwt = require("jsonwebtoken");
 const registerUser = require("../models/user.model");
 const mail=require("../../utils/email");
+const { Schema } = require("mongoose");
 exports.login = async (req, res) => {
     try {
         const email = req.body.email;
@@ -21,7 +22,7 @@ exports.login = async (req, res) => {
             email: regUserData.email,
         }
         const token = jwt.sign(payload, configJWT.JWTSecret, {
-            expiresIn: 30000
+            expiresIn: '1d'//30000
         });
         const storeToken=await registerUser.updateOne({email:req.body.email},{$push:{token:token}});
         if(!userLogin){
@@ -36,6 +37,7 @@ exports.login = async (req, res) => {
         } else {
             res.status(200).send({
                 message: "Login Successfull",
+                token:token,
             })
         }
     } catch (error) {
@@ -51,13 +53,13 @@ exports.forgotPassword=async(req,res)=>{
             })
         }else{
             const token=Math.random().toString(36).substring(2,15) + Math.random().toString(36).substring(2, 15);
-            const storeToken=await registerUser.updateOne({_id:forgotPasswordUser._id},{$set:{forgotPasswordToken:token}});
+            const storeToken=await registerUser.updateOne({_id:forgotPasswordUser._id},{$set:{forgotPasswordToken:token,forgotPasswordTokenExpire:Date.now()+360000}});
             let mailOptions={
                 from:'khushalijivani31@gmail.com',
                 to:req.body.email,
                 subject:'resetpassword verification mail',
                // html:'Hello , <br> please verify your account by clicking the link:<br>http://'+req.headers.host+'/resetPasswordConfirmation/'+req.body.email+'/'+token+'<br>Thank you!!<br>'
-                html:'Hello , <br> please verify your account by clicking the link:<br>http://3000/resetPassword/'+token+'<br>Thank you!!<br>'
+                html:'Hello , <br> please verify your account by clicking the link:<br>http://localhost:3000/resetPassword/'+token+'<br>Thank you!!<br>'
 
             }
             mail.email(mailOptions,(err,data)=>{
@@ -68,8 +70,8 @@ exports.forgotPassword=async(req,res)=>{
                         error:err
                     });
                 }else{
-                    res.send({
-                        code: 200,
+                    res.status(200).send({
+                        
                         message:"email send",
                         data: data,
                         token: token,
@@ -93,7 +95,7 @@ exports.resetPassword=async(req,res)=>{
                 from:'khushalijivani31@gmail.com',
                 to:req.body.email,
                 subject:'Change password verification mail',
-                html:'Hello , <br> please verify your account by clicking the link:<br>http://3000/resetPassword/'+token+'<br>Thank you!!<br>'
+                html:'Hello , <br> please verify your account by clicking the link:<br>http://localhost:3000/resetPassword/'+token+'<br>Thank you!!<br>'
             }
             mail.email(mailOptions,(err,data)=>{
                 if(err){
@@ -114,3 +116,9 @@ exports.resetPassword=async(req,res)=>{
             });               
   }
 }
+
+
+
+ 
+
+

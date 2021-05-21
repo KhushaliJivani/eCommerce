@@ -30,11 +30,17 @@ const userSchema = new Mongoose.Schema({
     forgotPasswordToken:{
         type:String,
     },
+    forgotPasswordTokenExpire:{
+        type:Number,
+    },
     resetPasswordToken:{
         type:String
     },
     emailVerificationToken: {
         type:String,
+    },
+    emailVerificationTokenExpire:{
+        type:Number,
     },
     token:[{
             type:String,

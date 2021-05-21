@@ -21,10 +21,10 @@ exports.email=(params,callback)=>{
 }
 exports.confirmMail=async function(req,res,next){
     const token=req.params.token;
-    const validateUser=registerUser.findOne({emailVerificationToken:token},function(err,token){
+    const validateUser=registerUser.findOne({where:{emailVerificationToken:token,emailVerificationTokenExpire:{$gt:Date.now()}},function(err,token){
         if(!token){
             return res.status(400).send({
-                message:"link expire",
+                message:"link expire click on resend",
             })
         }else{
             const user=registerUser.findOne({email:req.params.email},function(err,user){
@@ -52,37 +52,48 @@ exports.confirmMail=async function(req,res,next){
             });
 
         }
-    });
-}
-exports.confirmResetPasswordMail=async function(req,res){
-    const token=req.params.token;
-    const validateUser=registerUser.findOne({forgotPasswordToken:token},function(err,token){
-        if(!token){
-            return res.status(400).send({
-                message:"link expire",
-            })
-        }else{
-            res.status(200).send({
-                name:validateUser.fname,
-                message:'password reset link is ok',
-                data:validateUser.email
-            })
-        }      
+    }
 })
 }
-exports.confirmChangePasswordMail=async function(req,res){
+exports.confirmResetPasswordMail=function(req,res){
     const token=req.params.token;
-    const validateUser=registerUser.findOne({resetPasswordToken:token},function(err,token){
-        if(!token){
-            return res.status(400).send({
-                message:"link expire",
-            })
-        }else{
-            res.status(200).send({
-                name:validateUser.email,
-                message:'password reset link is ok'
-            })
-        }      
-})
+    const validateUser=registerUser.findOne({where:{forgotPasswordToken:token,forgotPasswordTokenExpire:{$gt:Date.now(),},},
+}).then(result=>{
+        res.status(200).send({
+            data:result,
+            message:"password reset link is ok",
+        })
+    }).catch(err=>{
+        res.status(400).send({
+            message:"link expire"
+        })
+    })
+
+//     }//,function(err,token){
+//         if(!token){
+//             return res.status(400).send({
+//                 message:"link expire",
+//             })
+//         }else{
+//             res.status(200).send({
+//                 message:"password reset link is ok",
+//                 data:validateUser.email
+//             })
+//         }      
+// })
 }
+exports.confirmChangePasswordMail= function(req,res){
+    const token=req.params.token;
+    const validateUser=registerUser.findOne({resetPasswordToken:token}).then(result=>{
+        res.status(200).send({
+            data:result,
+            message:"password reset link is ok",
+        })
+    }).catch(err=>{
+        res.status(400).send({
+            message:"link expire"
+        })
+    })
+}
+
 
