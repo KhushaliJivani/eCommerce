@@ -14,10 +14,10 @@ const userSchema = new Mongoose.Schema({
         required: true,
         unique: true,
     },
-    phoneNo: {
-        type: Number,
-        unique: true,
-    },
+    // phoneNo: {
+    //     type: Number,
+    //     unique: true,
+    // },
     password: {
         type: String,
         required: true,
@@ -27,26 +27,31 @@ const userSchema = new Mongoose.Schema({
         enum: [0, 1],
         default: 0
     },
-    forgotPasswordToken:{
-        type:String,
+    isSocialLogined: {
+        type: String,
+        enum: [0, 1],
+        default: 0
     },
-    forgotPasswordTokenExpire:{
-        type:Number,
+    forgotPasswordToken: {
+        type: String,
     },
-    resetPasswordToken:{
-        type:String
+    forgotPasswordTokenExpire: {
+        type: Number,
+    },
+    resetPasswordToken: {
+        type: String
     },
     emailVerificationToken: {
-        type:String,
+        type: String,
     },
-    emailVerificationTokenExpire:{
-        type:Number,
+    emailVerificationTokenExpire: {
+        type: Number,
     },
-    token:[{
-            type:String,
-            required:true,
-        }]
-  
+    token: [{
+        type: String,
+        required: true,
+    }]
+
 }, {
     timestamps: true,
 })

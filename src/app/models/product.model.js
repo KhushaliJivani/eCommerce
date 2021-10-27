@@ -1,22 +1,22 @@
-const Mongoose=require("mongoose");
-const productSchema=new Mongoose.Schema({
-    userId:{
-        type:Mongoose.Schema.Types.ObjectId,
-        ref:'user.model',
+const Mongoose = require("mongoose");
+const productSchema = new Mongoose.Schema({
+    userId: {
+        type: Mongoose.Schema.Types.ObjectId,
+        ref: 'user.model',
     },
-    productName:{
-        type:String,
+    productName: {
+        type: String,
     },
-    productPrice:{
-        type:Number,
+    productPrice: {
+        type: Number,
     },
-    stock:{
-        type:Number,
+    stock: {
+        type: Number,
     },
-    productImage:[{
-        type:String,
-        required:true,
-    }]   
+    productImage: [{
+        type: String,
+        required: true,
+    }]
 })
-const Product=new Mongoose.model("product",productSchema);
-module.exports=Product;
+const Product = new Mongoose.model("product", productSchema);
+module.exports = Product;

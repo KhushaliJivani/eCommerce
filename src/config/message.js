@@ -1,0 +1,31 @@
+
+module.exports={
+    errorMessage:{
+        accountNotActivated:"Please verify your email address",
+        accountverified:"your account is already verified",
+        userNotFound:"Please enter valid email or password",
+        contentNotBeEmpty:"Content can not be empty",
+        emailExist:"Email already exist",
+        emailNotFound:"Please enter valid email",
+        tokenNotFound:"Token not valid or expire",
+        genericError:"Spmothing went wrong please try again",
+        moduleNotFound:"Module not found",
+        passwordConfirmPasswordNotMatch:"password and confirm password did not match",
+        dataNotUpdated:"your data is not updated",
+        passwrdWrong:"there is a wrong password",
+        invalidLogin:"Invalid login",
+        QunatityNotThere:"Given quuantity is not available",
+        wrongUser:"user is not able to add a product",
+        productNotFound:"No product is found",
+    },
+    infoMessage:{
+        getDetail:"Detail get Successfullh",
+        saveDetail:"Detail saved successfully",
+        updateDetails:"Data updated successfully",
+        deleteDetails:"Data deleted successfully",
+        loginSuccess:"Successfully logined",
+        emailSend:"Email sent successfully",
+        logoutSuccess:"User is logout Successfully",
+        registerSuccess:"User is successfully registered",
+    },
+}
